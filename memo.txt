@@ -1,0 +1,11 @@
+  var q = ds.createQuery('project')
+    .filter('tags =', 'test')
+    .filter('tags =', 'politics');
+
+    ds.runQuery(q, function(err, items) {
+     if (err) {
+        callback(err);
+        return;
+      }
+      callback(null, items);
+  });

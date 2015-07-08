@@ -1,0 +1,21 @@
+{
+  "name": "portfolio-2015",
+  "version": "0.1.0",
+  "authors": [
+    "eloone <elodie.rafali@gmail.com>"
+  ],
+  "main": "client/index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "angular": "~1.4.2",
+    "angular-ui-router": "~0.2.15"
+  }
+}

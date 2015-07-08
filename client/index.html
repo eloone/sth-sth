@@ -1,0 +1,126 @@
+<html>
+  <head>
+    <title>Sample "Hello, World" Application</title>
+    <link type="text/css" rel="stylesheet" href="/assets/components/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="/assets/admin.css" />
+  </head>
+  <body>
+    Hey Miss !
+
+    <form action="/api/projects" method="post">
+      <input type="text" name="title"/>
+      <input type="submit" value="Save"/>
+    </form>
+
+    <div class="portlet">
+      
+        <div class="portlet-header">
+      
+          <h3>
+            <i class="fa fa-tasks"></i>
+            Create a new project
+          </h3>
+      
+        </div> <!-- /.portlet-header -->
+      
+        <div class="portlet-content">
+      
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <label class="col-md-2">Full Width Input</label>
+
+              <div class="col-md-10">
+                <input type="text" class="form-control" placeholder="Full Width">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-2">Large Width Input</label>
+
+              <div class="col-md-8">
+                <input type="text" class="form-control" placeholder="Large Width">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-2">Medium Width Input</label>
+
+              <div class="col-md-5">
+                <input type="text" class="form-control" placeholder="Medium Width">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-2">Small Width Input</label>
+
+              <div class="col-md-2">
+                <input type="text" class="form-control" placeholder="Small Width">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-2">Multiple Inputs</label> 
+              
+              <div class="col-md-10">
+                <div class="row">
+                  <div class="col-md-4">
+                    <input type="text" class="form-control">
+                    <p class="help-block">Left aligned helper.</p>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control">
+                    <p class="help-block text-center">Center aligned helper.</p>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control">
+                    <p class="help-block text-right">Right aligned helper.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-2">Checkbox (inline)</label>
+
+              <div class="col-md-10">
+                <label class="checkbox-inline">
+                  <input type="checkbox"> Option 1
+                </label>
+                <label class="checkbox-inline">
+                  <input type="checkbox"> Option 2
+                </label>
+
+                <label class="checkbox-inline">
+                  <input type="checkbox"> Option 3
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-2">Radio (inline)</label>
+
+              <div class="col-md-10">
+                <label class="radio-inline">
+                  <input type="radio" name="radioset1"> Option 1
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="radioset1"> Option 2
+                </label>
+
+                <label class="radio-inline">
+                  <input type="radio" name="radioset1"> Option 3
+                </label>
+              </div>
+            </div>
+
+          </form>
+      
+        </div> <!-- /.portlet-content -->
+      
+      </div>
+
+  <script type="text/javascript" src="/assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/assets/components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="/assets/components/angular-ui-router/release/angular-ui-router.min.js"></script>
+  </body>
+</html>
