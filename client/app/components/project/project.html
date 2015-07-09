@@ -1,0 +1,48 @@
+<div class="page-project">
+	<h1 ng-if="$state.current.name === 'root.project.create'">Create a new project</h1>
+	<h1 ng-if="$state.current.name === 'root.project.edit'">Edit a project</h1>
+	<div class="page-body">
+		<form ng-submit="submit()">
+		  <div class="form-group">
+		    <label for="title">Title</label>
+		    <input ng-model="project.title" type="title" class="form-control" id="title" placeholder="Title">
+		  </div>
+		  <div class="form-group">
+		    <label for="tagline">Tagline</label>
+		    <input ng-model="project.tagline" type="text" class="form-control" id="tagline" placeholder="Tagline">
+		  </div>
+		  <div class="form-group text-editor text-editor-summary">
+		  	 <label for="summaryText">Project description summary</label>
+		 	<textarea id="summaryText" ui-tinymce="tinymceOptions" ng-model="project.summaryText"></textarea>
+		  </div>
+		  <div class="form-group text-editor text-editor-full">
+		  	 <label for="fullText">Project description page content</label>
+		 	<textarea id="fullText" ui-tinymce="tinymceOptions" ng-model="project.fullText"></textarea>
+		  </div>
+		  <div class="row">
+		  	 <div class="col-md-3 form-group">
+			    <label for="urlTitle">Project URL Title</label>
+			    <input ng-model="project.urlTitle" type="text" class="form-control" id="urlTitle" placeholder="Project Url Title">
+			  </div>
+			  <div class="col-md-3 col-md-offset-1 form-group">
+			    <label for="url">Project URL</label>
+			    <input ng-model="project.url" type="text" class="form-control" id="url" placeholder="Project Url">
+			  </div>
+		  </div>
+		   <div class="form-group">
+		    <label for="date">Date of release</label>
+		    <input required type="date" ng-model="project.date" class="form-control" id="date" placeholder="Date of release">
+		  </div>
+		  <div class="form-group">
+		    <label for="thumbnail">Thumbnail</label>
+		    <input type="file" id="thumbnail">
+		  </div>
+		  <div class="form-group">
+		    <label for="tags">Tags</label>
+		    <span></span>
+		    <input ng-model="project.tags" class="form-control tags" type="text" id="tags">
+		  </div>
+		  <button type="submit" class="btn btn-default">Save</button>
+		</form>
+	</div>
+</div>

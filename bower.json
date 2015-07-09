@@ -1,6 +1,6 @@
 {
   "name": "portfolio-2015",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "authors": [
     "eloone <elodie.rafali@gmail.com>"
   ],
@@ -16,6 +16,9 @@
   "dependencies": {
     "bootstrap": "~3.3.5",
     "angular": "~1.4.2",
-    "angular-ui-router": "~0.2.15"
+    "angular-ui-router": "~0.2.15",
+    "jquery": "~2.1.4",
+    "angular-ui-tinymce": "~0.0.9",
+    "angular-resource": "~1.4.2"
   }
 }

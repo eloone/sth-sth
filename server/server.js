@@ -24,12 +24,9 @@ api.use(bodyParser.json());
 
 app.use('/api', api);
 
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
-});
-
 app.use('/assets', serveStatic(path.join(__dirname, '..', 'client', 'assets')));
 app.use('/assets/components', serveStatic(path.join(__dirname, '..', 'bower_components')));
+app.use('/app', serveStatic(path.join(__dirname, '..', 'client', 'app')));
 
 setApiRouter('projects', api, projectsApi);
 setApiRouter('tags', api, tagsApi);
@@ -39,4 +36,8 @@ app.get('/_ah/health', function(req, res) {
   res.status(200)
     .set('Content-Type', 'text/plain')
     .send('ok');
+});
+
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
 });

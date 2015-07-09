@@ -55,7 +55,7 @@ function documentApi(settings){
         });
         return;
       }
-      callback(null, formatItem(item));
+      callback(null, [formatItem(item)]);
     });
   };
 
@@ -69,6 +69,7 @@ function documentApi(settings){
         return;
       }
       data.id = key.path.pop();
+      console.log('POST result', data);
       callback(null, data);
     });
   };
