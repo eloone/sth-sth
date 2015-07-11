@@ -1,0 +1,30 @@
+<div class="page-tag">
+	<h1 ng-if="$state.current.name === 'root.tag.create'">Create a new tag</h1>
+	<h1 ng-if="$state.current.name === 'root.tag.edit'">Edit a tag</h1>
+	<folio-alert message="message"></folio-alert>
+	<div class="page-body">
+		<form ng-submit="submit()">
+		  <div class="row">
+			  <div class="col-md-3 form-group">
+			    <label for="title">Title</label>
+			    <input required ng-model="tag.title" type="title" class="form-control" id="title" placeholder="Title">
+			  </div>
+			  <div class="col-md-3 col-md-offset-1 form-group">
+			    <label for="name">Name</label>
+			    <input disabled required ng-model="tag.name" type="name" class="form-control" id="title" placeholder="Name">
+			  </div>
+		  </div>
+		  <div class="form-group">
+		  	<label for="type">Tag type</label>
+		 	<select required id="type" ng-options="type for type in tagTypes" ng-model="tag.type">
+		 		<option></option>
+		 	</select>
+		  </div>
+		  <div class="form-group text-editor text-editor-desc">
+		  	<label for="desc">Description</label>
+		 	<textarea id="desc" ui-tinymce="tinymceOptions" ng-model="tag.desc"></textarea>
+		  </div>
+		  <button type="submit" class="btn btn-default">Save</button>
+		</form>
+	</div>
+</div>

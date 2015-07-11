@@ -2,7 +2,8 @@
 	angular.module('folio.components.project.controller', [
 		'ui.router',
 		'ui.tinymce',
-		'folio.components.project.resource'
+		'folio.components.project.resource',
+		'folio.components.alert.directive'
 	])
 	.controller('ProjectCtrl', ['$scope', '$state', 'Project', ProjectCtrl]);
 
@@ -13,6 +14,14 @@
 		Project.get({id: $state.params.id}, function(project){
 			$scope.project = project[0];
 			$scope.project.date = new Date($scope.project.date);
+		}, function(e) {
+			if(e.status === 404) {
+				$state.go('root.404');
+			}
+
+			if(e.status !== 200) {
+				$state.go('root.error');
+			}
 		});
 
 		$scope.tinymceOptions = {
@@ -35,6 +44,8 @@
     		if($state.current.name === 'root.project.create'){
 	    		project.$save().then(function(result){
 	    			$state.go('root.project.edit', {id: result.id});
+	    		}, function(e) {
+	    			$scope.message.error = 'Project not created. ' + e.statusText;
 	    		});
     		}
 
@@ -42,6 +53,8 @@
 	    		project.$update().then(function(result){
 	    			$scope.project = result;
 	    			$scope.project.date = new Date(result.date);
+	    		}, function(e){
+	    			$scope.message.error = 'Project not updated. ' + e.statusText;
 	    		});
     		}
 

@@ -69,7 +69,6 @@ function documentApi(settings){
         return;
       }
       data.id = key.path.pop();
-      console.log('POST result', data);
       callback(null, data);
     });
   };
