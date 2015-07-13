@@ -32,6 +32,7 @@
 			}, function(e){
 				if(e.status === 404) {
 					$state.go('root.404');
+					return;
 				}
 
 				if(e.status !== 200) {
@@ -49,6 +50,9 @@
     	};
 
     	$scope.submit = function(){
+
+    		$scope.tag.ENTITY_NAME = $scope.tag.name;
+
     		var tag = new Tag($scope.tag);
 
     		if($state.current.name === 'root.tag.create'){

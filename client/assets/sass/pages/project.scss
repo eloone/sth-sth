@@ -1,3 +1,5 @@
+$suggestedTagColor: #99E5D9;
+
 .page-project {
 	.tags {
 		width: 100%;
@@ -6,6 +8,55 @@
 	.text-editor-summary {
 		textarea {
 			height: 250px;
+		}
+	}
+
+	.tags-list {
+		margin-bottom: 10px;
+		overflow: hidden;
+	}
+
+	.tag {
+		float: left;
+		background: #eee;
+		border-radius: 5px;
+		padding: 5px;
+		margin-right: 3px;
+
+		&.suggested {
+			background: $suggestedTagColor;
+			cursor: pointer;
+
+			&:hover {
+				background: darken($suggestedTagColor, 10);
+
+			}
+		}
+
+		a {
+			color: $lightMintGreen;
+		}
+
+		&:hover {
+			.delete-btn {
+				display: inline;
+				text-decoration: none;
+			}
+		}
+
+		.delete-btn {
+			cursor: pointer;
+			color: $lightMintGreen;
+			margin-left: 5px;
+			display: none;
+			border: 1px solid $suggestedTagColor;
+			padding: 2px;
+			border-radius: 3px;
+
+			&:hover {
+				color: darken($lightMintGreen, 10);
+				border: 1px solid darken($lightMintGreen, 10);
+			}
 		}
 	}
 }

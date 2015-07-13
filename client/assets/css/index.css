@@ -4,6 +4,38 @@
 .page-project .text-editor-summary textarea {
   height: 250px; }
 
+.page-project .tags-list {
+  margin-bottom: 10px;
+  overflow: hidden; }
+
+.page-project .tag {
+  float: left;
+  background: #eee;
+  border-radius: 5px;
+  padding: 5px;
+  margin-right: 3px; }
+  .page-project .tag.suggested {
+    background: #99E5D9;
+    cursor: pointer; }
+    .page-project .tag.suggested:hover {
+      background: #70dbca; }
+  .page-project .tag a {
+    color: #33B7B7; }
+  .page-project .tag:hover .delete-btn {
+    display: inline;
+    text-decoration: none; }
+  .page-project .tag .delete-btn {
+    cursor: pointer;
+    color: #33B7B7;
+    margin-left: 5px;
+    display: none;
+    border: 1px solid #99E5D9;
+    padding: 2px;
+    border-radius: 3px; }
+    .page-project .tag .delete-btn:hover {
+      color: #288f8f;
+      border: 1px solid #288f8f; }
+
 .page-resource-list .list-container {
   margin: 0 auto; }
 
@@ -12,3 +44,10 @@ body {
 
 .form-control {
   width: 300px; }
+
+.navbar {
+  margin-top: 15px;
+  margin-bottom: 30px; }
+  .navbar .navbar-brand {
+    color: #7EE4D3;
+    font-weight: bold; }

@@ -60,8 +60,16 @@ function documentApi(settings){
   };
 
   this.insert = function(data, callback) {
+    var key = [settings.kind, settings.kindName, settings.entity];
+
+    if(data.ENTITY_NAME) {
+      key.push(data.ENTITY_NAME);
+
+      delete data.ENTITY_NAME;
+    }
+
     ds.save({
-      key: ds.key([settings.kind, settings.kindName, settings.entity]),
+      key: ds.key(key),
       data: data
     }, function(err, key) {
       if (err) {

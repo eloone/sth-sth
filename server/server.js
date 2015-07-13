@@ -37,7 +37,7 @@ app.get('/_ah/health', function(req, res) {
     .set('Content-Type', 'text/plain')
     .send('ok');
 });
-
+//test
 app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
 });

@@ -1,7 +1,6 @@
 (function(angular){
 	angular.module('folio', [
-		'ui.router',
-		'folio.main.routes',
+		'folio.main',
 		'folio.components'
 	])
 	.config(function($stateProvider, $urlRouterProvider, $locationProvider){

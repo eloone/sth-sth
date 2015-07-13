@@ -1,3 +1,4 @@
+@import 'variables';
 @import './pages/project.scss';
 @import './pages/tag.scss';
 @import './pages/list.scss';
@@ -8,4 +9,15 @@ body {
 
 .form-control {
 	width: 300px;
+}
+
+.navbar {
+	margin-top: 15px;
+	margin-bottom: 30px;
+
+	.navbar-brand {
+		color: $mintGreen;
+		font-weight: bold;
+		
+	}
 }

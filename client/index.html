@@ -1,7 +1,8 @@
 <html ng-app="folio">
   <head>
     <base href="/"/>
-    <title>Sample "Hello, World" Application</title>
+    <title>Folio</title>
+    <link rel="stylesheet" href="/assets/components/font-awesome/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="/assets/components/bootstrap/dist/css/bootstrap.min.css"/>
     <link type="text/css" rel="stylesheet" href="/assets/css/index.css" />
   </head>
@@ -9,6 +10,7 @@
 
   <div ui-view class="container"></div>
   <!-- Libraries -->
+  <script type="text/javascript" src="/assets/components/lodash/lodash.min.js"></script>
   <script type="text/javascript" src="/assets/components/tinymce-dist/tinymce.min.js"></script>
   <script type="text/javascript" src="/assets/components/jquery/dist/jquery.min.js"></script>
   <script type="text/javascript" src="/assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -19,6 +21,7 @@
   <script type="text/javascript" src="/assets/components/underscore.string/dist/underscore.string.min.js"></script>
 
   <!-- App -->
+  <script type="text/javascript" src="app/main/navbar/navbar.directive.js"></script>
   <script type="text/javascript" src="app/components/alert/alert.directive.js"></script>
   <script type="text/javascript" src="app/components/tag/tag.resource.js"></script>
   <script type="text/javascript" src="app/components/project/project.resource.js"></script>
@@ -27,6 +30,7 @@
   <script type="text/javascript" src="app/components/project/projectList.controller.js"></script>
   <script type="text/javascript" src="app/components/project/project.controller.js"></script>
   <script type="text/javascript" src="app/components/components.js"></script>
+  <script type="text/javascript" src="app/main/main.js"></script>
   <script type="text/javascript" src="app/main/routes.js"></script>
   <script type="text/javascript" src="app/app.js"></script>
   </body>

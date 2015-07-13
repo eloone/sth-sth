@@ -3,25 +3,82 @@
 		'ui.router',
 		'ui.tinymce',
 		'folio.components.project.resource',
+		'folio.components.tag.resource',
 		'folio.components.alert.directive'
 	])
-	.controller('ProjectCtrl', ['$scope', '$state', 'Project', ProjectCtrl]);
+	.controller('ProjectCtrl', ['$scope', '$state', 'Project', 'Tag', ProjectCtrl]);
 
-	function ProjectCtrl($scope, $state, Project){
+	function ProjectCtrl($scope, $state, Project, Tag){
 		$scope.$state = $state;
+		$scope.message = {};
 		$scope.project = {};
+		$scope.allTags = [];
 
-		Project.get({id: $state.params.id}, function(project){
-			$scope.project = project[0];
-			$scope.project.date = new Date($scope.project.date);
-		}, function(e) {
-			if(e.status === 404) {
-				$state.go('root.404');
+		if($state.params.id) {
+			Project.get({id: $state.params.id}, function(project){
+				$scope.project = project[0];
+				$scope.project.date = new Date($scope.project.date);
+
+				Tag.get(function(tags){
+					$scope.allTags = tags;
+					$scope.project.tags = _.filter($scope.project.tags, function(tag){
+						return _.find($scope.allTags, {name: tag});
+					});
+				});
+
+			}, function(e) {
+				if(e.status === 404) {
+					$state.go('root.404');
+					return;
+				}
+
+				if(e.status !== 200) {
+					$state.go('root.error');
+				}
+			});
+		}
+
+		$scope.suggestedTags = [];
+		$scope.tagSearch = '';
+
+		$scope.addSuggestedTag = function(tag) {
+			uniqPushTo($scope.project.tags, tag);
+			_.remove($scope.suggestedTags, function(suggestedTag){
+				return suggestedTag === tag;
+			});
+		};
+
+		$scope.removeTag = function(removedTag) {
+			_.remove($scope.project.tags, function(tag){
+				return removedTag === tag;
+			});
+		};
+
+		function uniqPushTo(array, value){
+			if(_.includes(array, value)) return;
+
+			array.push(value);
+		}
+
+		$scope.$watch('tagSearch', function(newVal){
+
+			if(_.isUndefined(newVal)) return;
+			if(_.isEmpty(newVal)) {
+				$scope.suggestedTags = [];
+				return;
 			}
 
-			if(e.status !== 200) {
-				$state.go('root.error');
+			if(newVal.length > 2) {
+				$scope.allTags.map(function(tag){
+					if(s(tag.name).startsWith(newVal)) {
+						uniqPushTo($scope.suggestedTags,tag.name);
+						$scope.suggestedTags = _.filter($scope.suggestedTags, function(tag){
+							return !_.includes($scope.project.tags, tag);
+						});
+					}
+				});
 			}
+
 		});
 
 		$scope.tinymceOptions = {
@@ -39,11 +96,18 @@
     	};
 
     	$scope.submit = function(){
+
+			$scope.project.tags = $scope.project.tags.map(function(tag){
+				return tag.trim();
+			});
+
     		var project = new Project($scope.project);
 
     		if($state.current.name === 'root.project.create'){
 	    		project.$save().then(function(result){
 	    			$state.go('root.project.edit', {id: result.id});
+
+	    			$scope.message.success = 'Project successfully created !';
 	    		}, function(e) {
 	    			$scope.message.error = 'Project not created. ' + e.statusText;
 	    		});
@@ -53,6 +117,8 @@
 	    		project.$update().then(function(result){
 	    			$scope.project = result;
 	    			$scope.project.date = new Date(result.date);
+
+	    			$scope.message.success = 'Project successfully updated !';
 	    		}, function(e){
 	    			$scope.message.error = 'Project not updated. ' + e.statusText;
 	    		});
