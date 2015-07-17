@@ -1,22 +1,26 @@
 'use strict';
 
-module.exports = setApiRouter;
+module.exports = {
+	setApiRouter: setApiRouter,
+	handleApiResponse: handleApiResponse
+};
 
-function setApiRouter(resourceName, api, documentApi){
-	api.post('/' + resourceName, function(req, res) {
-	  documentApi.insert(req.body, handleApiResponse(res, 201));
+function setApiRouter(routeName, api, apiHandler, verbs){
+	api.post('/' + routeName, function(req, res) {
+	  apiHandler.insert(req.body, handleApiResponse(res, 201));
 	});
 
-	api.get('/' + resourceName, function(req, res) {
-	  documentApi.getAll(handleApiResponse(res, 200));
+	api.get('/' + routeName, function(req, res) {
+	  apiHandler.getAll(handleApiResponse(res, 200));
 	});
 
-	api.get('/' + resourceName + '/:id', function(req, res) {
-	  documentApi.get(req.params.id, handleApiResponse(res, 200));
+	api.get('/' + routeName + '/:id', function(req, res) {
+	  apiHandler.get(req.params.id, handleApiResponse(res, 200));
 	});
 
-	api.patch('/' + resourceName + '/:id', function(req, res) {
-	  documentApi.update(req.params.id, req.body, handleApiResponse(res, 200));
+	api.patch('/' + routeName + '/:id', function(req, res) {
+		console.log('req.body', req.body);
+	  apiHandler.update(req.params.id, req.body, handleApiResponse(res, 200));
 	});
 }
 

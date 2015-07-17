@@ -4,15 +4,21 @@
 		'ui.tinymce',
 		'folio.components.project.resource',
 		'folio.components.tag.resource',
-		'folio.components.alert.directive'
+		'folio.components.alert.directive',
+		'ngFileUpload'
 	])
-	.controller('ProjectCtrl', ['$scope', '$state', 'Project', 'Tag', ProjectCtrl]);
+	.controller('ProjectCtrl', ['$scope', '$state', 'Project', 'Tag', 'Upload','$http', ProjectCtrl]);
 
-	function ProjectCtrl($scope, $state, Project, Tag){
+	function ProjectCtrl($scope, $state, Project, Tag, Upload, $http){
 		$scope.$state = $state;
 		$scope.message = {};
 		$scope.project = {};
 		$scope.allTags = [];
+
+
+		$scope.$watch('files', function(newVal){
+			$scope.filesUploaded = newVal;
+		});
 
 		if($state.params.id) {
 			Project.get({id: $state.params.id}, function(project){
@@ -101,8 +107,18 @@
 				return tag.trim();
 			});
 
-    		var project = new Project($scope.project);
+			var fd = new FormData();
+	        fd.append('file', $scope.filesUploaded[0]);
+	        console.log($scope.filesUploaded);
+	        $http.post('/api/upload/thumb', fd, {
+	            transformRequest: angular.identity,
+	            headers: {'Content-Type': undefined}
+	        })
 
+			console.log($scope.project.thumbnail);
+
+    		var project = new Project($scope.project);
+return;
     		if($state.current.name === 'root.project.create'){
 	    		project.$save().then(function(result){
 	    			$state.go('root.project.edit', {id: result.id});

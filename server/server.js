@@ -6,8 +6,9 @@ var path = require('path');
 var serveStatic = require('serve-static');
 var app = module.exports.app = express();
 var api = module.exports.api = express();
-var setApiRouter = require('./api/api.router');
+var apiRouter = require('./api/api.router');
 var documentApi = require('./api/document.api');
+var uploadApi = require('./api/upload.api');
 var projectsApi = documentApi({
   kind: 'Portfolio',
   kindName: 'projects',
@@ -28,8 +29,9 @@ app.use('/assets', serveStatic(path.join(__dirname, '..', 'client', 'assets')));
 app.use('/assets/components', serveStatic(path.join(__dirname, '..', 'bower_components')));
 app.use('/app', serveStatic(path.join(__dirname, '..', 'client', 'app')));
 
-setApiRouter('projects', api, projectsApi);
-setApiRouter('tags', api, tagsApi);
+apiRouter.setApiRouter('projects', api, projectsApi);
+apiRouter.setApiRouter('tags', api, tagsApi);
+uploadApi.setApiRouter(api);
 
 // Respond to the App Engine health check
 app.get('/_ah/health', function(req, res) {

@@ -6,6 +6,7 @@
   "dependencies": {
     "body-parser": "^1.4.3",
     "express": "^4.5.1",
+    "formidable": "^1.0.17",
     "gcloud": "^0.8.1",
     "serve-static": "^1.10.0"
   },

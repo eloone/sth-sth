@@ -17,7 +17,7 @@
 	    })
 	    .state('root.home', {
 	    	url: '/',
-	    	templateUrl: '/app/main/main.html'
+	    	templateUrl: '/app/components/home.html'
 	    })
 	    .state('root.project', {
 	    	url: '/project',
