@@ -5,19 +5,30 @@
 		'folio.components.project.resource',
 		'folio.components.tag.resource',
 		'folio.components.alert.directive',
+		'folio.components.project.thumbUpload',
 		'ngFileUpload'
 	])
-	.controller('ProjectCtrl', ['$scope', '$state', 'Project', 'Tag', 'Upload','$http', ProjectCtrl]);
+	.controller('ProjectCtrl', [
+		'$scope',
+		'$state',
+		'Project',
+		'Tag',
+		'Upload',
+		'$http',
+		'$log',
+		'Upload',
+		ProjectCtrl]);
 
-	function ProjectCtrl($scope, $state, Project, Tag, Upload, $http){
+	function ProjectCtrl($scope, $state, Project, Tag, Upload, $http, $log, Upload){
 		$scope.$state = $state;
 		$scope.message = {};
 		$scope.project = {};
 		$scope.allTags = [];
 
-
 		$scope.$watch('files', function(newVal){
-			$scope.filesUploaded = newVal;
+			if(!newVal) return;
+
+			$scope.thumbToUpload = newVal[0];
 		});
 
 		if($state.params.id) {
@@ -101,24 +112,41 @@
 	        height: "200px"
     	};
 
+    	$scope.cancelReplaceThumbnail = function(){
+    		$scope.thumbToUpload = null;
+    	};
+
     	$scope.submit = function(){
 
 			$scope.project.tags = $scope.project.tags.map(function(tag){
 				return tag.trim();
 			});
 
-			var fd = new FormData();
-	        fd.append('file', $scope.filesUploaded[0]);
-	        console.log($scope.filesUploaded);
-	        $http.post('/api/upload/thumb', fd, {
-	            transformRequest: angular.identity,
-	            headers: {'Content-Type': undefined}
-	        })
+			// If there is a thumb to upload
+	    	if($scope.thumbToUpload){
+	    		var filename = _.snakeCase($scope.project.title) + '_thumb.' + _.last($scope.thumbToUpload.name.split('.'));
 
-			console.log($scope.project.thumbnail);
+	    		Upload.upload({
+	    			url: '/api/upload/thumb',
+	    			fields: {
+	    				filename: filename
+	    			},
+	    			file: file
+	    		}).success(function(thumbMetadata){
+	    			$scope.project.thumbLink = thumbMetadata.data.publicLink;
+	    			saveProject();
+	    		}).error(function(err){
+	    			$log.error(err);
+	    		});
+	    	}else{
+	    		saveProject();
+	    	}
 
+    	};
+
+    	function saveProject(){
     		var project = new Project($scope.project);
-return;
+
     		if($state.current.name === 'root.project.create'){
 	    		project.$save().then(function(result){
 	    			$state.go('root.project.edit', {id: result.id});
@@ -139,8 +167,7 @@ return;
 	    			$scope.message.error = 'Project not updated. ' + e.statusText;
 	    		});
     		}
-
-    	};
+    	}
 
 	}
 

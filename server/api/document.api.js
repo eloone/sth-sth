@@ -29,6 +29,12 @@ function formatItem(result) {
 
 function documentApi(settings){
 
+  this.delete = function(id, callback) {
+    ds.delete(ds.key([settings.kind, settings.kindName, settings.entity, id]), function(err) {
+      callback(err || null);
+    });
+  };
+
   this.getAll = function(callback) {
     var q = ds.createQuery(settings.entity)
       .hasAncestor(ds.key([settings.kind, settings.kindName]));

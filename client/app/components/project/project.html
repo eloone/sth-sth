@@ -37,8 +37,18 @@
 		    <input required type="date" ng-model="project.date" class="form-control" id="date" placeholder="Date of release">
 		  </div>
 		  <div class="form-group">
-		    <label for="thumbnail">Thumbnail</label>
-		    <div class="button" ngf-select="" ng-model="files" ngf-multiple="multiple">Select File</div>
+		  	<div class="form-group">
+		  		<label for="thumbnail">Thumbnail</label>
+		  		 <button class="btn" ngf-select="" ng-model="files" ngf-multiple="multiple">
+			    	<span ng-if="project.thumbLink">Replace File</span>
+			    	<span ng-if="!project.thumbLink">Select File</span>
+			    </button>
+			    <button ng-if="thumbToUpload" class="btn" ng-click="cancelReplaceThumbnail()">Cancel</button>
+		  	</div>
+		  	<div>
+			  	<img width="200px" ng-if="project.thumbLink && !thumbToUpload" src="{{project.thumbLink}}" alt="thumb"/>
+			  	<img ng-if="thumbToUpload" width="200px" ngf-src="thumbToUpload" alt="preview"/>
+		 	</div>
 		  </div>
 		  <div class="form-group">
 		    <label for="tags">Tags</label>

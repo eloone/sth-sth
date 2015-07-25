@@ -19,9 +19,14 @@ function setApiRouter(routeName, api, apiHandler, verbs){
 	});
 
 	api.patch('/' + routeName + '/:id', function(req, res) {
-		console.log('req.body', req.body);
 	  apiHandler.update(req.params.id, req.body, handleApiResponse(res, 200));
 	});
+
+	if(verbs && verbs.delete){
+		api.delete('/' + routeName + '/:id', function(req, res) {
+		  apiHandler.delete(req.params.id, handleApiResponse(res, 200));
+		});
+	}
 }
 
 function handleApiResponse(res, successStatus) {
