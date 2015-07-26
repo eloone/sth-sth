@@ -5,8 +5,8 @@
 		'folio.components.project.resource',
 		'folio.components.tag.resource',
 		'folio.components.alert.directive',
-		'folio.components.project.thumbUpload',
-		'ngFileUpload'
+		'ngFileUpload',
+		'ui.sortable'
 	])
 	.controller('ProjectCtrl', [
 		'$scope',
@@ -17,15 +17,22 @@
 		'$http',
 		'$log',
 		'Upload',
+		'$timeout',
 		ProjectCtrl]);
 
-	function ProjectCtrl($scope, $state, Project, Tag, Upload, $http, $log, Upload){
+	function ProjectCtrl($scope, $state, Project, Tag, Upload, $http, $log, Upload, $timeout){
 		$scope.$state = $state;
 		$scope.message = {};
 		$scope.project = {};
 		$scope.allTags = [];
+		$scope.selectedMedias = [];
+		$scope.selectedDrafts = [];
 
-		$scope.$watch('files', function(newVal){
+		$scope.sortableOptions = {
+			connectWith: '.connectedLists .list-inline'
+		};
+
+		$scope.$watch('projectThumb', function(newVal){
 			if(!newVal) return;
 
 			$scope.thumbToUpload = newVal[0];
@@ -116,24 +123,115 @@
     		$scope.thumbToUpload = null;
     	};
 
-    	$scope.submit = function(){
+    	$scope.deleteThumb = function(){
+    		$scope.project.thumbLink = null;
+    	};
 
-			$scope.project.tags = $scope.project.tags.map(function(tag){
-				return tag.trim();
-			});
+    	$scope.removeDraftMedia = function(index){
+    		$scope.project.draftMedias.splice(index, 1);
+    	};
+
+    	$scope.selectDraftMedia = function(index){
+    		// Toggle selection
+    		if(_.contains($scope.selectedDrafts, index)){
+    			_.pull($scope.selectedDrafts, index);
+    		}else{
+    			$scope.selectedDrafts.push(index);
+    		}
+    	};
+
+    	$scope.addMediasToProject = function(){
+    		_.forEach($scope.selectedDrafts, function(selectedIndex){
+    			var selectedDraft = _.first($scope.project.draftMedias.splice(selectedIndex, 1));
+    			delete selectedDraft.selected;
+
+    			if(!_.isArray($scope.project.publishedMedias)){
+    				$scope.project.publishedMedias = [];
+    			}
+
+    			$scope.project.publishedMedias.unshift(selectedDraft);
+    		});
+    	};
+
+    	$scope.$watchCollection('selectedDrafts', function(){
+    		_.forEach($scope.project.draftMedias, function(media, index){
+    			if(_.contains($scope.selectedDrafts, index)){
+    				media.selected = true;
+    			}else{
+    				media.selected = false;
+    			}
+    		});
+    	});
+
+    	$scope.uploadSelectedMedias = function(){
+    		var medias = $scope.selectedMedias;
+
+    		if (medias !== null) {
+	            for (var i = 0; i < medias.length; i++) {
+	                $scope.errorMsg = null;
+	                (function (media) {
+	                    uploadMedia(media);
+	                })(medias[i]);
+	            }
+        	}
+    	};
+
+    	function uploadMedia(file){
+    		var filename = _.snakeCase($scope.project.title) + '_' + file.name;
+
+	    	file.upload = Upload.upload({
+	            url: '/api/upload/medias',
+	            method: 'POST',
+	            fields: {
+	            	filename: filename
+	            },
+	            file: file,
+	        });
+
+	        file.upload.then(function (res) {
+	            $timeout(function () {
+
+	                ($scope.project.draftMedias = $scope.project.draftMedias || []).unshift({
+	                	publicLink: res.data.publicLink,
+	                	caption: ''
+	                });
+
+	                // Remove media from selected medias if successfully uploaded
+	                $scope.selectedMedias = _.filter($scope.selectedMedias, function(media){
+	                	var reg = new RegExp(media.name + '$');
+	                	return reg.test(res.data.name);
+	                });
+
+	                saveProject();
+
+	            });
+	        }, function (response) {
+	            if (response.status > 0)
+	                $scope.errorMsg = response.status + ': ' + response.data;
+	        });
+
+	        file.upload.progress(function (evt) {
+	            // Math.min is to fix IE which reports 200% sometimes
+	            file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+	        });
+    	}
+
+    	$scope.submit = function(){
 
 			// If there is a thumb to upload
 	    	if($scope.thumbToUpload){
-	    		var filename = _.snakeCase($scope.project.title) + '_thumb.' + _.last($scope.thumbToUpload.name.split('.'));
+	    		var originalName = $scope.thumbToUpload.name;
+	    		var filename = _.snakeCase($scope.project.title) + '_thumb_' + originalName;
 
 	    		Upload.upload({
 	    			url: '/api/upload/thumb',
 	    			fields: {
 	    				filename: filename
 	    			},
-	    			file: file
+	    			file: $scope.thumbToUpload
 	    		}).success(function(thumbMetadata){
-	    			$scope.project.thumbLink = thumbMetadata.data.publicLink;
+	    			$scope.project.thumbLink = thumbMetadata.publicLink;
+	    			$scope.thumbToUpload = null;
 	    			saveProject();
 	    		}).error(function(err){
 	    			$log.error(err);
@@ -145,6 +243,10 @@
     	};
 
     	function saveProject(){
+    		$scope.project.tags = $scope.project.tags.map(function(tag){
+				return tag.trim();
+			});
+
     		var project = new Project($scope.project);
 
     		if($state.current.name === 'root.project.create'){

@@ -23,6 +23,9 @@
     "underscore.string": "~3.1.1",
     "lodash": "~3.10.0",
     "font-awesome": "~4.3.0",
-    "ng-file-upload": "~5.0.9"
+    "ng-file-upload": "~5.0.9",
+    "moment": "~2.10.3",
+    "angular-ui-sortable": "~0.13.4",
+    "jquery-ui": "~1.11.4"
   }
 }

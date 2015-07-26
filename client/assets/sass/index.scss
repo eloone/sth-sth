@@ -1,10 +1,16 @@
 @import 'variables';
+@import 'mixins';
 @import './pages/project.scss';
 @import './pages/tag.scss';
 @import './pages/list.scss';
 
 body {
 	background: white;
+}
+
+a {
+  color: $mintGreen;
+  text-decoration: none;
 }
 
 .form-control {
@@ -18,6 +24,20 @@ body {
 	.navbar-brand {
 		color: $mintGreen;
 		font-weight: bold;
-		
+
+	}
+}
+
+.delete-btn {
+	cursor: pointer;
+	color: $lightMintGreen;
+	margin-left: 5px;
+	border: 1px solid $suggestedTagColor;
+	padding: 2px;
+	border-radius: 3px;
+
+	&:hover {
+		color: darken($lightMintGreen, 10);
+		border: 1px solid darken($lightMintGreen, 10);
 	}
 }

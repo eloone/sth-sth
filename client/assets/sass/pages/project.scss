@@ -45,18 +45,80 @@ $suggestedTagColor: #99E5D9;
 		}
 
 		.delete-btn {
-			cursor: pointer;
-			color: $lightMintGreen;
-			margin-left: 5px;
 			display: none;
-			border: 1px solid $suggestedTagColor;
-			padding: 2px;
-			border-radius: 3px;
-
-			&:hover {
-				color: darken($lightMintGreen, 10);
-				border: 1px solid darken($lightMintGreen, 10);
-			}
 		}
 	}
+
+	.upload-medias-btn{
+		float: right;
+	}
+
+	.drop-box {
+	  background: #F8F8F8;
+	  border: 5px dashed #DDD;
+	  width: 200px;
+	  height: 65px;
+	  text-align: center;
+	  padding-top: 25px;
+	  margin-left: 10px;
+	}
+
+	.media-item{
+		vertical-align: top;
+		position: relative;
+		margin: 10px 10px 10px 0;
+		background: #DBDBDB;
+		padding: 10px;
+		box-shadow: 3px 3px 5px #aaa;
+
+		.delete-btn{
+			position: absolute;
+			top: 0;
+			right: 0;
+			background: #DBECEB;
+		}
+
+		&.selected{
+			background: $lightGreen;
+		}
+	}
+
+	.project-media-caption{
+		border: 1px solid #ddd;
+		display: block;
+		margin-top: 10px;
+		bottom: 10px;
+		width: 100%;
+
+		&.static-caption{
+			max-width: 270px;
+  			word-wrap: break-word;
+  			background-color: #DBECEB;
+  			padding: 5px;
+  			color: #333;
+		}
+	}
+
+	.project-medias,
+	.uploaded-medias,
+	.published-medias{
+		clear: both;
+		border: 2px dashed #DDD;
+		padding: 10px;
+		margin: 15px 0;
+	}
+
+	.list-inline{
+		min-height: 30px;
+		background: #eee;
+		padding: 0 10px;
+		box-shadow: 3px 3px 5px #eee;
+	}
+
+	.uploaded-medias,
+	.published-medias
+	{
+		border: 1px solid #DDD;
+	}
+
 }

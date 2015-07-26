@@ -25,22 +25,76 @@
     display: inline;
     text-decoration: none; }
   .page-project .tag .delete-btn {
-    cursor: pointer;
-    color: #33B7B7;
-    margin-left: 5px;
-    display: none;
-    border: 1px solid #99E5D9;
-    padding: 2px;
-    border-radius: 3px; }
-    .page-project .tag .delete-btn:hover {
-      color: #288f8f;
-      border: 1px solid #288f8f; }
+    display: none; }
+
+.page-project .upload-medias-btn {
+  float: right; }
+
+.page-project .drop-box {
+  background: #F8F8F8;
+  border: 5px dashed #DDD;
+  width: 200px;
+  height: 65px;
+  text-align: center;
+  padding-top: 25px;
+  margin-left: 10px; }
+
+.page-project .media-item {
+  vertical-align: top;
+  position: relative;
+  margin: 10px 10px 10px 0;
+  background: #DBDBDB;
+  padding: 10px;
+  box-shadow: 3px 3px 5px #aaa; }
+  .page-project .media-item .delete-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #DBECEB; }
+  .page-project .media-item.selected {
+    background: #B7FAF0; }
+
+.page-project .project-media-caption {
+  border: 1px solid #ddd;
+  display: block;
+  margin-top: 10px;
+  bottom: 10px;
+  width: 100%; }
+  .page-project .project-media-caption.static-caption {
+    max-width: 270px;
+    word-wrap: break-word;
+    background-color: #DBECEB;
+    padding: 5px;
+    color: #333; }
+
+.page-project .project-medias,
+.page-project .uploaded-medias,
+.page-project .published-medias {
+  clear: both;
+  border: 2px dashed #DDD;
+  padding: 10px;
+  margin: 15px 0; }
+
+.page-project .list-inline {
+  min-height: 30px;
+  background: #eee;
+  padding: 0 10px;
+  box-shadow: 3px 3px 5px #eee; }
+
+.page-project .uploaded-medias,
+.page-project
+.published-medias {
+  border: 1px solid #DDD; }
 
 .page-resource-list .list-container {
   margin: 0 auto; }
 
 body {
   background: white; }
+
+a {
+  color: #7EE4D3;
+  text-decoration: none; }
 
 .form-control {
   width: 300px; }
@@ -51,3 +105,14 @@ body {
   .navbar .navbar-brand {
     color: #7EE4D3;
     font-weight: bold; }
+
+.delete-btn {
+  cursor: pointer;
+  color: #33B7B7;
+  margin-left: 5px;
+  border: 1px solid #99E5D9;
+  padding: 2px;
+  border-radius: 3px; }
+  .delete-btn:hover {
+    color: #288f8f;
+    border: 1px solid #288f8f; }
