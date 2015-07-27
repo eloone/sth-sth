@@ -70,6 +70,10 @@ $suggestedTagColor: #99E5D9;
 
 	.btn{
 		margin-left: 10px;
+		margin-top: 10px;
+		&:focus{
+			outline: 0;
+		}
 	}
 
 	.toggle-hide-btn{
@@ -113,9 +117,20 @@ $suggestedTagColor: #99E5D9;
 		}
 	}
 
+	.html-media-holder {
+		iframe {
+			max-width: 330px;
+		}
+	}
+
+	.video-editor{
+		overflow: hidden;
+	}
+
 	.project-medias,
 	.uploaded-medias,
-	.published-medias{
+	.published-medias,
+	.video-editor{
 		clear: both;
 		border: 2px dashed #DDD;
 		padding: 10px;

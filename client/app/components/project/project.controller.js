@@ -18,9 +18,10 @@
 		'$log',
 		'Upload',
 		'$timeout',
+		'$sce',
 		ProjectCtrl]);
 
-	function ProjectCtrl($scope, $state, Project, Tag, Upload, $http, $log, Upload, $timeout){
+	function ProjectCtrl($scope, $state, Project, Tag, Upload, $http, $log, Upload, $timeout, $sce){
 		$scope.$state = $state;
 		$scope.message = {};
 		$scope.project = {};
@@ -28,6 +29,8 @@
 		$scope.selectedMedias = [];
 		$scope.selectedDrafts = [];
 		$scope.selectedPublished = [];
+		$scope.insertedHtmlMedia = '';
+		$scope.$sce = $sce;
 
 		$scope.sortableOptions = {
 			connectWith: '.connectedLists .list-inline'
@@ -113,18 +116,36 @@
 		});
 
 		$scope.tinymceOptions = {
-	        theme: "modern",
+	        theme: 'modern',
 	        plugins: [
-	            "advlist autolink lists link image charmap preview hr anchor pagebreak",
-	            "searchreplace wordcount visualblocks visualchars code fullscreen",
-	            "insertdatetime media nonbreaking save table contextmenu directionality",
-	            "emoticons template paste textcolor"
+	            'advlist autolink lists link image charmap preview hr anchor pagebreak',
+	            'searchreplace wordcount visualblocks visualchars code fullscreen',
+	            'insertdatetime media nonbreaking save table contextmenu directionality',
+	            'emoticons template paste textcolor'
 	        ],
-	        toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-	        toolbar2: "print preview media | forecolor backcolor emoticons",
+	        toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+	        toolbar2: 'print preview media | forecolor backcolor emoticons',
 	        image_advtab: true,
-	        height: "200px"
+	        height: '200px'
     	};
+
+    	$scope.tinymceVideoOptions = {
+    		format: 'raw',
+    		trusted: true,
+    		theme: 'modern',
+	        plugins: ['media'],
+	        toolbar1: 'media | bold italic | alignleft aligncenter alignright alignjustify',
+	        height: '200px',
+	        width: '500px',
+	        extended_valid_elements : 'iframe[src|frameborder|style|scrolling|class|width|height|name|align|allowfullscreen]'
+   		};
+
+    	$scope.$watch('htmlMedia', function(newVal){
+			if(!tinyMCE.activeEditor) return;
+
+			$scope.insertedHtmlMedia = tinyMCE.activeEditor.getContent();
+			$scope.previewHtmlMedia = $sce.trustAsHtml($scope.insertedHtmlMedia);
+    	});
 
     	$scope.cancelReplaceThumbnail = function(){
     		$scope.thumbToUpload = null;
@@ -140,6 +161,19 @@
 
     	$scope.removePublishedMedia = function(index){
     		$scope.project.publishedMedias.splice(index, 1);
+    	};
+
+    	$scope.addHtmlMedia = function(){
+    		var media = {
+    			caption: '',
+    			html: $scope.insertedHtmlMedia,
+    			type: 'html'
+    		};
+
+    		$scope.project.draftMedias.unshift(media);
+
+    		$scope.htmlMedia = null;
+    		$scope.showHtmlMedia = false;
     	};
 
     	$scope.selectDraftMedia = function(index){
@@ -237,7 +271,8 @@
 
 	                ($scope.project.draftMedias = $scope.project.draftMedias || []).unshift({
 	                	publicLink: res.data.publicLink,
-	                	caption: ''
+	                	caption: '',
+	                	type: res.data.type
 	                });
 
 	                // Remove media from selected medias if successfully uploaded

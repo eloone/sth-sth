@@ -44,7 +44,10 @@
   margin-left: 10px; }
 
 .page-project .btn {
-  margin-left: 10px; }
+  margin-left: 10px;
+  margin-top: 10px; }
+  .page-project .btn:focus {
+    outline: 0; }
 
 .page-project .toggle-hide-btn {
   float: right;
@@ -78,9 +81,16 @@
     padding: 5px;
     color: #333; }
 
+.page-project .html-media-holder iframe {
+  max-width: 330px; }
+
+.page-project .video-editor {
+  overflow: hidden; }
+
 .page-project .project-medias,
 .page-project .uploaded-medias,
-.page-project .published-medias {
+.page-project .published-medias,
+.page-project .video-editor {
   clear: both;
   border: 2px dashed #DDD;
   padding: 10px;
