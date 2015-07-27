@@ -27,10 +27,17 @@
 		$scope.allTags = [];
 		$scope.selectedMedias = [];
 		$scope.selectedDrafts = [];
+		$scope.selectedPublished = [];
 
 		$scope.sortableOptions = {
 			connectWith: '.connectedLists .list-inline'
 		};
+
+		$scope.$watch('freshlySelectedMedias', function(newVal){
+			if(!newVal) return;
+
+			$scope.selectedMedias = newVal.concat($scope.selectedMedias);
+		});
 
 		$scope.$watch('projectThumb', function(newVal){
 			if(!newVal) return;
@@ -131,8 +138,13 @@
     		$scope.project.draftMedias.splice(index, 1);
     	};
 
+    	$scope.removePublishedMedia = function(index){
+    		$scope.project.publishedMedias.splice(index, 1);
+    	};
+
     	$scope.selectDraftMedia = function(index){
     		// Toggle selection
+    		$scope.project.draftMedias[index].selected = !$scope.project.draftMedias[index].selected;
     		if(_.contains($scope.selectedDrafts, index)){
     			_.pull($scope.selectedDrafts, index);
     		}else{
@@ -140,28 +152,60 @@
     		}
     	};
 
-    	$scope.addMediasToProject = function(){
-    		_.forEach($scope.selectedDrafts, function(selectedIndex){
-    			var selectedDraft = _.first($scope.project.draftMedias.splice(selectedIndex, 1));
-    			delete selectedDraft.selected;
+    	$scope.selectPublishedMedia = function(index){
+    		// Toggle selection
+    		$scope.project.publishedMedias[index].selected = !$scope.project.publishedMedias[index].selected;
+    		if(_.contains($scope.selectedPublished, index)){
+    			_.pull($scope.selectedPublished, index);
+    		}else{
+    			$scope.selectedPublished.push(index);
+    		}
+    	};
 
-    			if(!_.isArray($scope.project.publishedMedias)){
-    				$scope.project.publishedMedias = [];
-    			}
+    	$scope.removeMediasFromProject = function(){
+    		addToCollection('selectedPublished', 'publishedMedias', 'draftMedias');
+    	};
 
-    			$scope.project.publishedMedias.unshift(selectedDraft);
+    	$scope.selectAllPublishedMedias = function(){
+    		_.forEach($scope.project.publishedMedias, function(media, index){
+    			media.selected = true;
+    			$scope.selectedPublished.push(index);
     		});
     	};
 
-    	$scope.$watchCollection('selectedDrafts', function(){
+    	$scope.selectAllDraftMedias = function(){
     		_.forEach($scope.project.draftMedias, function(media, index){
-    			if(_.contains($scope.selectedDrafts, index)){
-    				media.selected = true;
-    			}else{
-    				media.selected = false;
-    			}
+    			media.selected = true;
+    			$scope.selectedDrafts.push(index);
     		});
-    	});
+    	};
+
+    	$scope.addMediasToProject = function(){
+    		addToCollection('selectedDrafts', 'draftMedias', 'publishedMedias');
+    	};
+
+    	function addToCollection(indexArrayPty, fromProjectPty, toProjectPty){
+    		$scope[indexArrayPty].sort();
+
+    		_.forEach($scope[indexArrayPty], function(selectedIndex){
+    			var selectedDraft = _.chain($scope.project[fromProjectPty].slice(selectedIndex, selectedIndex + 1))
+    				.first()
+    				.omit('selected')
+    				.value();
+
+    			if(!_.isArray($scope.project[toProjectPty])){
+    				$scope.project[toProjectPty] = [];
+    			}
+
+    			$scope.project[toProjectPty].push(selectedDraft);
+    		});
+
+    		$scope.project[fromProjectPty] = _.filter($scope.project[fromProjectPty], function(media, i){
+    			return !media.selected;
+    		});
+
+    		$scope[indexArrayPty] = [];
+    	}
 
     	$scope.uploadSelectedMedias = function(){
     		var medias = $scope.selectedMedias;
@@ -199,7 +243,7 @@
 	                // Remove media from selected medias if successfully uploaded
 	                $scope.selectedMedias = _.filter($scope.selectedMedias, function(media){
 	                	var reg = new RegExp(media.name + '$');
-	                	return reg.test(res.data.name);
+	                	return !reg.test(res.data.name);
 	                });
 
 	                saveProject();
@@ -245,6 +289,10 @@
     	function saveProject(){
     		$scope.project.tags = $scope.project.tags.map(function(tag){
 				return tag.trim();
+			});
+
+			_.forEach($scope.project.draftMedias, function(media){
+				delete media.selected;
 			});
 
     		var project = new Project($scope.project);

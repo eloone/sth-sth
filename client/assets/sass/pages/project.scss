@@ -5,6 +5,11 @@ $suggestedTagColor: #99E5D9;
 		width: 100%;
 	}
 
+	.box-outlined{
+		border: 1px solid #ddd;
+		padding: 10px;
+	}
+
 	.text-editor-summary {
 		textarea {
 			height: 250px;
@@ -63,10 +68,19 @@ $suggestedTagColor: #99E5D9;
 	  margin-left: 10px;
 	}
 
+	.btn{
+		margin-left: 10px;
+	}
+
+	.toggle-hide-btn{
+		float: right;
+		cursor: pointer;
+	}
+
 	.media-item{
 		vertical-align: top;
 		position: relative;
-		margin: 10px 10px 10px 0;
+		margin: 10px 10px 0 0;
 		background: #DBDBDB;
 		padding: 10px;
 		box-shadow: 3px 3px 5px #aaa;
@@ -111,7 +125,7 @@ $suggestedTagColor: #99E5D9;
 	.list-inline{
 		min-height: 30px;
 		background: #eee;
-		padding: 0 10px;
+		padding: 10px;
 		box-shadow: 3px 3px 5px #eee;
 	}
 
