@@ -4,8 +4,9 @@
 
 	function ProjectResource($resource) {
 		return $resource('/api/projects/:id', {id: '@id'}, {
-			get: { method : 'GET', isArray: true},
-			update: { method: 'PATCH', headers: { 'Content-Type': 'application/json' }}
+			get: { method : 'GET', isArray: true },
+			update: { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, isArray: true },
+			save: { method: 'POST', isArray: true }
 		});
 	}
 

@@ -13,6 +13,10 @@
 			    <label for="tagline">Tagline</label>
 			    <input ng-model="project.tagline" type="text" class="form-control" id="tagline" placeholder="Tagline">
 			  </div>
+			  <div class="col-md-3 col-md-offset-1 form-group">
+			    <label for="tagline">Role</label>
+			    <input ng-model="project.role" type="text" class="form-control" id="role" placeholder="My role">
+			  </div>
 			</div>
 		  <div class="form-group text-editor text-editor-summary">
 		  	 <label>Project description summary</label>
@@ -56,8 +60,8 @@
 				 	</div>
 			 	</div>
 			 	<div ng-show="project.id" class="col-md-6">
-			 		<label>Project medias</label>
-				  	<div ngf-select="" ngf-drop="" ng-model="freshlySelectedMedias" ng-model-rejected="rejFiles" ngf-multiple="true" ngf-accept="accept" accept="image/*,audio/*,video/*" ng-disabled="disabled" ngf-capture="capture" ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" ngf-min-size="minSize" ngf-max-size="maxSize" ngf-keep="keep" ngf-keep-distinct="keepDistinct" ngf-reset-on-click="false" ngf-reset-model-on-click="false" ngf-allow-dir="true" class="drop-box ng-pristine ng-valid" ngf-drop-available="dropAvailable">Select File
+			 		<label>Project medias ({{minWidth}} x {{minHeight}} px)</label>
+				  	<div ngf-select="" ngf-drop="" ng-model="freshlySelectedMedias" ng-model-rejected="rejFiles" ngf-multiple="true" ngf-accept="accept" accept="image/*,audio/*,video/*" ng-disabled="disabled" ngf-capture="capture" ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" ngf-min-size="minSize" ngf-max-size="maxSize" ngf-keep="keep" ngf-keep-distinct="keepDistinct" ngf-reset-on-click="false" ngf-min-width="994" ngf-min-height="500" ngf-reset-model-on-click="false" ngf-allow-dir="true" class="drop-box ng-pristine ng-valid" ngf-drop-available="dropAvailable">Select File
 		            <span ng-show="dropAvailable" class="">or Drop</span>
 		         </div>
 		         <button ng-click="showHtmlMedia = !showHtmlMedia" type="button" class="btn">Add html media (video | html)</button>
@@ -79,7 +83,8 @@
 		 <div ng-show="selectedMedias.length" class="project-medias row">
 		 	<label>Selected medias</label>
 			<ul class="list-inline">
-				<li ng-repeat="media in selectedMedias">
+				<li class="media-item" ng-repeat="media in selectedMedias">
+					 <i ng-click="removeSelectedMedia($index)" class="delete-btn fa fa-times"></i>
 					 <img width="200px" ng-show="media.type.indexOf('image') > -1" ngf-src="media" class="thumb" ngf-accept="'image/*'">
 					 <span class="progress" ng-show="media.progress >= 0">
 					<div style="width:{{media.progress}}%">{{media.progress}}%</div>
@@ -87,6 +92,7 @@
 				</li>
 			</ul>
 			<button type="button" class="btn upload-medias-btn" ng-click="uploadSelectedMedias()">Upload</button>
+			<button type="button" class="btn pull-right" ng-click="cancelUpload()">Cancel</button>
 		</div>
 		<div class="connectedLists">
 			<div class="uploaded-medias row">
@@ -113,9 +119,25 @@
 				<ul ui-sortable="sortableOptions" ng-model="project.publishedMedias" class="list-inline">
 					<li ng-click="selectPublishedMedia($index)" ng-class="{selected: media.selected}" class="media-item" ng-repeat="media in project.publishedMedias">
 						 <i ng-click="removePublishedMedia($index)" class="delete-btn fa fa-times"></i>
-						 <img height="200px" src="{{media.publicLink}}" class="thumb" />
+
+						 <img ng-if="!media.type || media.type === 'image'" height="200px" src="{{media.publicLink}}" class="thumb" />
+
+						 <div class="html-media-holder" ng-if="media.type == 'html'" ng-bind-html="$sce.trustAsHtml(media.html)"></div>
+
 						 <span class="static-caption project-media-caption" ng-show="!editCaption && media.caption" ng-click="editCaption = !editCaption">{{media.caption}}</span>
 						 <textarea placeholder="Edit media caption" class="project-media-caption form-control" ng-show="editCaption || !media.caption" ng-keypress="editCaption = true" ng-blur="editCaption = false" ng-model="media.caption"></textarea>
+						 <label>xcenter</label>
+						 <select name="xcenter" ng-init="media.xcenter='left'" ng-model="media.xcenter">
+					      <option value="center">center</option>
+					      <option value="left">left</option>
+					      <option value="right">right</option>
+					     </select>
+						 <label>ycenter</label>
+						 <select name="ycenter" ng-init="media.ycenter='top'" ng-model="media.ycenter">
+					      <option value="center">center</option>
+					      <option value="top">top</option>
+					      <option value="bottom">bottom</option>
+					     </select>
 					</li>
 				</ul>
 				<button ng-click="removeMediasFromProject()" type="button" class="btn pull-right">Remove selection from project</button>
@@ -132,7 +154,7 @@
 	      </span>
 	    	<span ng-click="addSuggestedTag(tag)" class="tag suggested" ng-repeat="tag in suggestedTags">{{tag}}</span>
 	    </div>
-	    <input placeholder="Search tag" ng-model="tagSearch" class="form-control" type="text" id="tags">
+	    <input ng-disabled="!allTags.length" placeholder="Search tag" ng-model="tagSearch" class="form-control" type="text" id="tags">
 	  </div>
 	  <button type="submit" class="btn btn-default">Save</button>
 	</form>

@@ -32,14 +32,42 @@
 		$scope.insertedHtmlMedia = '';
 		$scope.$sce = $sce;
 
+		$scope.$on('$stateChangeSuccess', function(){
+			$scope.message = {};
+
+			if($state.current.name === 'root.project.create') {
+				$scope.project = {};
+			}
+		});
+
 		$scope.sortableOptions = {
 			connectWith: '.connectedLists .list-inline'
 		};
 
+		$scope.xcenterPositions = [{name: 'center'}, {name: 'left'}, {name: 'right'}];
+
+		$scope.minWidth = 994;
+		$scope.minHeight = 500;
 		$scope.$watch('freshlySelectedMedias', function(newVal){
 			if(!newVal) return;
+			var file = newVal[0];
+			var fr = new FileReader;
+            fr.onload = function () { // file is loaded
+                var img = new Image;
+                img.onload = function () {
+					// image is loaded; sizes are available
+                    if(img.width >= $scope.minWidth && img.height >= $scope.minHeight) {
+                    	$scope.selectedMedias = newVal.concat($scope.selectedMedias);
+                	} else {
+                		alert('Image dimensions must be '+ $scope.minWidth +' x '+ $scope.minHeight +' px at minimum.' +
+                		 ' Uploaded image is ' + img.width + ' x ' + img.height + '.');
+                	}
+                };
 
-			$scope.selectedMedias = newVal.concat($scope.selectedMedias);
+                img.src = fr.result; // is the data URL because called with readAsDataURL
+            };
+
+            fr.readAsDataURL(file);
 		});
 
 		$scope.$watch('projectThumb', function(newVal){
@@ -48,11 +76,15 @@
 			$scope.thumbToUpload = newVal[0];
 		});
 
+		$scope.cancelUpload = function(){
+			$scope.selectedMedias = [];
+		};
+
 		if($state.params.id) {
 			Project.get({id: $state.params.id}, function(project){
 				$scope.project = project[0];
 				$scope.project.date = new Date($scope.project.date);
-
+console.log($scope.project)
 				Tag.get(function(tags){
 					$scope.allTags = tags;
 					$scope.project.tags = _.filter($scope.project.tags, function(tag){
@@ -70,12 +102,19 @@
 					$state.go('root.error');
 				}
 			});
+		}else{
+			Tag.get(function(tags){
+					$scope.allTags = tags;
+					$scope.project.tags = [];
+				});
 		}
 
 		$scope.suggestedTags = [];
 		$scope.tagSearch = '';
 
 		$scope.addSuggestedTag = function(tag) {
+			$scope.project.tags = $scope.project.tags || [];
+
 			uniqPushTo($scope.project.tags, tag);
 			_.remove($scope.suggestedTags, function(suggestedTag){
 				return suggestedTag === tag;
@@ -95,7 +134,6 @@
 		}
 
 		$scope.$watch('tagSearch', function(newVal){
-
 			if(_.isUndefined(newVal)) return;
 			if(_.isEmpty(newVal)) {
 				$scope.suggestedTags = [];
@@ -161,6 +199,10 @@
 
     	$scope.removePublishedMedia = function(index){
     		$scope.project.publishedMedias.splice(index, 1);
+    	};
+
+    	$scope.removeSelectedMedia = function(index){
+    		$scope.selectedMedias.splice(index, 1);
     	};
 
     	$scope.addHtmlMedia = function(){
@@ -272,7 +314,8 @@
 	                ($scope.project.draftMedias = $scope.project.draftMedias || []).unshift({
 	                	publicLink: res.data.publicLink,
 	                	caption: '',
-	                	type: res.data.type
+	                	//image/png, image/jpg
+	                	type: res.data.contentType.split('/')[0]
 	                });
 
 	                // Remove media from selected medias if successfully uploaded
@@ -322,19 +365,52 @@
     	};
 
     	function saveProject(){
+    		$scope.message = {};
+
     		$scope.project.tags = $scope.project.tags.map(function(tag){
 				return tag.trim();
 			});
+
+			var hasType = _.find($scope.project.tags, function(tag){
+				return /app-type/.test(tag);
+			});
+
+			if(!hasType) {
+				alert('Project is missing a type !');
+				return;
+			}
 
 			_.forEach($scope.project.draftMedias, function(media){
 				delete media.selected;
 			});
 
-    		var project = new Project($scope.project);
+			_.forEach($scope.project.publishedMedias, function(media){
+				delete media.selected;
+			});
 
+    		var data = _.map($scope.project, function(value, key){
+
+    			if(key === 'fullText'){
+    				return {
+    					name: key,
+    					value: value,
+    					excludeFromIndexes: true
+    				};
+    			}
+
+    			return {
+    				name: key,
+    				value: value
+    			};
+    		});
+
+    		//var project = new Project({id: $scope.project.id, data: data});
+    		var params = {id: $scope.project.id, data: data};
     		if($state.current.name === 'root.project.create'){
-	    		project.$save().then(function(result){
-	    			$state.go('root.project.edit', {id: result.id});
+	    		Project.save(params).$promise.then(function(res){
+	    			var id = _.find(res, { name: 'id' });
+
+	    			$state.go('root.project.edit', { id: id ? id.value : res.id });
 
 	    			$scope.message.success = 'Project successfully created !';
 	    		}, function(e) {
@@ -343,10 +419,7 @@
     		}
 
     		if($state.current.name === 'root.project.edit'){
-	    		project.$update().then(function(result){
-	    			$scope.project = result;
-	    			$scope.project.date = new Date(result.date);
-
+	    		Project.update(params).$promise.then(function(res){
 	    			$scope.message.success = 'Project successfully updated !';
 	    		}, function(e){
 	    			$scope.message.error = 'Project not updated. ' + e.statusText;

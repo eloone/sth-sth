@@ -7,6 +7,11 @@
 	      abstract: true,
 	      templateUrl: '/app/main/main.html'
 	    })
+	    .state('root.login', {
+	      url: '/login',
+	      templateUrl: '/app/main/login.html',
+	      controller: 'LoginCtrl'
+	    })
 	    .state('root.404', {
 	      url: '/404',
 	      templateUrl: '/app/components/404.html'

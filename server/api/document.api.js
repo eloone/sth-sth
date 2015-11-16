@@ -1,6 +1,8 @@
 'use strict';
 
 var projectId = process.env.GAE_LONG_APP_ID || process.env.DATASET_ID || 'portfolio-997';
+var appEnv = process.env.APP_ENV || 'development';
+var _ = require('lodash');
 
 if (!projectId) {
   var MISSING_ID = [
@@ -30,14 +32,14 @@ function formatItem(result) {
 function documentApi(settings){
 
   this.delete = function(id, callback) {
-    ds.delete(ds.key([settings.kind, settings.kindName, settings.entity, id]), function(err) {
+    ds.delete(ds.key({ namespace: appEnv, path:[settings.kind, settings.kindName, settings.entity, id]}), function(err) {
       callback(err || null);
     });
   };
 
   this.getAll = function(callback) {
-    var q = ds.createQuery(settings.entity)
-      .hasAncestor(ds.key([settings.kind, settings.kindName]));
+    var q = ds.createQuery(appEnv, settings.entity)
+      .hasAncestor(ds.key({namespace: appEnv, path: [settings.kind, settings.kindName]}));
     ds.runQuery(q, function(err, items) {
       if (err) {
         callback(err);
@@ -48,7 +50,7 @@ function documentApi(settings){
   };
 
   this.get = function(id, callback) {
-    ds.get(ds.key([settings.kind, settings.kindName, settings.entity, id]), function(err, item) {
+    ds.get(ds.key({namespace: appEnv, path: [settings.kind, settings.kindName, settings.entity, id]}), function(err, item) {
       if (err) {
         callback(err);
         return;
@@ -67,6 +69,11 @@ function documentApi(settings){
 
   this.insert = function(data, callback) {
     var key = [settings.kind, settings.kindName, settings.entity];
+    var name = data.ENTITY_NAME;
+
+    if(data.data){
+      data = data.data;
+    }
 
     if(data.ENTITY_NAME) {
       key.push(data.ENTITY_NAME);
@@ -74,22 +81,37 @@ function documentApi(settings){
       delete data.ENTITY_NAME;
     }
 
+    var savedKey = ds.key({namespace: appEnv, path: key});
+
     ds.save({
-      key: ds.key(key),
+      key: savedKey,
       data: data
-    }, function(err, key) {
+    }, function(err) {
       if (err) {
         callback(err);
         return;
       }
-      data.id = key.path.pop();
+
+      if(_.isArray(data)){
+        data.push({
+          name: 'id',
+          value: savedKey.path.pop()
+        });
+      } else {
+        data.id = savedKey.path.pop();
+      }
+
       callback(null, data);
     });
   };
 
   this.update =  function(id, data, callback) {
+    if(data.data){
+      data = data.data;
+    }
+
     ds.save({
-      key: ds.key([settings.kind, settings.kindName, settings.entity, id]),
+      key: ds.key({namespace: appEnv, path: [settings.kind, settings.kindName, settings.entity, id]}),
       data: data
     }, function(err) {
       if (err) {

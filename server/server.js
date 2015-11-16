@@ -14,6 +14,10 @@ var projectsApi = documentApi({
   kindName: 'projects',
   entity: 'project'
 });
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
 
 var tagsApi = documentApi({
   kind: 'Portfolio',
@@ -21,7 +25,36 @@ var tagsApi = documentApi({
   entity: 'tag'
 });
 
+var usersApi = documentApi({
+  kind: 'Portfolio',
+  kindName: 'users',
+  entity: 'user'
+});
+
 api.use(bodyParser.json());
+app.use(cookieParser());
+app.use(session({ secret: 'overwhelmed cat'}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.use(new LocalStrategy(function(username, password, done){
+  usersApi.get(username, function(err, res){
+    var user = res[0];
+    if(user.password === password){
+      return done(null, { authenticated: true });
+    } else{
+      return done(null, false, { message: 'Incorrect credentials' });
+    }
+  });
+}));
 
 app.use('/api', api);
 
@@ -32,6 +65,21 @@ app.use('/app', serveStatic(path.join(__dirname, '..', 'client', 'app')));
 apiRouter.setApiRouter('projects', api, projectsApi);
 apiRouter.setApiRouter('tags', api, tagsApi);
 uploadApi.setApiRouter(api);
+
+app.post('/api/login', passport.authenticate('local'), function(req, res){
+  res.send({
+    authenticated: true
+  })
+});
+
+app.get('/api/login', function(req, res){
+  res.send(req.user);
+});
+
+app.get('/api/logout', function(req, res){
+  req.logout();
+  res.send({ authenticated: false });
+});
 
 // Respond to the App Engine health check
 app.get('/_ah/health', function(req, res) {

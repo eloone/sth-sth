@@ -41,7 +41,5 @@ gulp.task('watch', function() {
 });
 
 gulp.task('serve', function(cb) {
-  app.listen(8080, function(){
-    console.log('Server running on 8080');
-  });
+  require('./run.js');
 });
