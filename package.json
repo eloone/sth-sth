@@ -1,6 +1,6 @@
 {
   "name": "origin",
-  "description": "The origin project",
+  "description": "The coocoo project",
   "version": "0.3.0",
   "license": "BSD",
   "dependencies": {

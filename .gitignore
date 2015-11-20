@@ -26,4 +26,5 @@ node_modules
 bower_components
 
 key.json
+config.json
 *~

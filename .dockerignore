@@ -1,1 +1,2 @@
 node_modules
+gcloud preview app deploy app.yaml --version

@@ -1,15 +1,12 @@
 'use strict';
 
-var projectId = process.env.GAE_LONG_APP_ID || process.env.DATASET_ID || 'portfolio-997';
+var config = require('../../config.json');
+var projectId = process.env.GAE_ID || config.gaeId;
 var appEnv = process.env.APP_ENV || 'development';
 var _ = require('lodash');
 
 if (!projectId) {
-  var MISSING_ID = [
-    'Cannot find your project ID. Please set an environment variable named ',
-    '"DATASET_ID", holding the ID of your project.'
-  ].join('');
-  throw new Error(MISSING_ID);
+  throw new Error('Missing GAE id');
 }
 
 var gcloud = require('gcloud')({
