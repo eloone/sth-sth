@@ -47,6 +47,13 @@ function documentApi(settings){
   };
 
   this.get = function(id, callback) {
+
+    var idNb = parseInt(id);
+
+    if(idNb || idNb === 0){
+      id = idNb;
+    }
+
     ds.get(ds.key({namespace: appEnv, path: [settings.kind, settings.kindName, settings.entity, id]}), function(err, item) {
       if (err) {
         callback(err);
@@ -56,7 +63,8 @@ function documentApi(settings){
       if (!item) {
         callback({
           code: 404,
-          message: 'No matching entity was found.'
+          message: 'No matching entity was found.',
+          log: {namespace: appEnv, path: [settings.kind, settings.kindName, settings.entity, id]}
         });
         return;
       }
@@ -66,12 +74,12 @@ function documentApi(settings){
 
   this.insert = function(data, callback) {
     var key = [settings.kind, settings.kindName, settings.entity];
-    var name = data.ENTITY_NAME;
 
     if(data.data){
       data = data.data;
     }
 
+    // ENTITY_NAME replaces the id
     if(data.ENTITY_NAME) {
       key.push(data.ENTITY_NAME);
 

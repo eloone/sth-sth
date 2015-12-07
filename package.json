@@ -9,7 +9,7 @@
     "express": "^4.5.1",
     "express-session": "^1.12.1",
     "formidable": "^1.0.17",
-    "gcloud": "^0.24.1",
+    "gcloud": "^0.25.1",
     "lodash": "^3.10.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",

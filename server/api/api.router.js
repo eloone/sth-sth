@@ -33,7 +33,7 @@ function handleApiResponse(res, successStatus) {
   return function(err, payload) {
     if (err) {
       console.error(err);
-      res.status(err.code).send(err.message);
+      res.status(err.code).send(err);
       return;
     }
 
