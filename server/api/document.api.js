@@ -29,6 +29,12 @@ function formatItem(result) {
 function documentApi(settings){
 
   this.delete = function(id, callback) {
+    var idNb = parseInt(id);
+
+    if(idNb || idNb === 0){
+      id = idNb;
+    }
+
     ds.delete(ds.key({ namespace: appEnv, path:[settings.kind, settings.kindName, settings.entity, id]}), function(err) {
       callback(err || null);
     });
@@ -111,6 +117,12 @@ function documentApi(settings){
   };
 
   this.update =  function(id, data, callback) {
+    var idNb = parseInt(id);
+
+    if(idNb || idNb === 0){
+      id = idNb;
+    }
+
     if(data.data){
       data = data.data;
     }

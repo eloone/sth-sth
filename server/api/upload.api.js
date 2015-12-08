@@ -14,6 +14,7 @@ var gcloud = require('gcloud')({
 
 var storage = gcloud.storage();
 // Reference an existing bucket.
+var bucketName = 'folio-assets';
 var bucketThumbs = storage.bucket('folio-assets');
 var thumbFolder = 'thumbs';
 var mediasFolder = 'medias';
@@ -27,10 +28,7 @@ module.exports = {
 
 function uploadMedias(req, res){
 	var settings = {
-		bucketPath: mediasFolder,
-		onComplete: function(metadata){
-			metadata.publicLink = [config.storageUrl, metadata.bucket, metadata.name].join('/');
-		}
+		bucketPath: mediasFolder
 	};
 
 	uploadToGCS(req, res, settings);
@@ -38,10 +36,7 @@ function uploadMedias(req, res){
 
 function uploadThumb(req, res){
 	var settings = {
-		bucketPath: thumbFolder,
-		onComplete: function(metadata){
-			metadata.publicLink = [config.storageUrl, metadata.bucket, metadata.name].join('/');
-		}
+		bucketPath: thumbFolder
 	};
 
 	uploadToGCS(req, res, settings);
@@ -72,24 +67,27 @@ function uploadToGCS(req, res, settings){
 				return res.status(500)
 				.send({error: 'File upload: filename is missing for Google Cloud Storage'});
 			}
-
+console.log('multipartStream', multipartStream)
 			var bucketFile = bucketThumbs.file([settings.bucketPath, filename].join('/'));
 
 			multipartStream.pipe(bucketFile.createWriteStream())
 			.on('error', function(err){
 				res.status(500).send(err);
 			})
-			.on('complete', function(metadata){
-				console.log('metedata', metadata);
+			.on('finish', function(){
 
-				settings.onComplete(metadata);
+				if(settings.onComplete){
+					settings.onComplete();
+				}
 
 				bucketFile.makePublic(function(err){
 					if(err){
 						console.log('GCS: Failed to make file public', err);
 					}
 
-					res.send(metadata);
+					res.send({
+						publicLink: [config.storageUrl, bucketName, settings.bucketPath, filename].join('/')
+					});
 
 				});
 

@@ -53,11 +53,12 @@
 			var file = newVal[0];
 			var fr = new FileReader;
             fr.onload = function () { // file is loaded
-                var img = new Image;
+                var img = new Image();
                 img.onload = function () {
 					// image is loaded; sizes are available
                     if(img.width >= $scope.minWidth && img.height >= $scope.minHeight) {
                     	$scope.selectedMedias = newVal.concat($scope.selectedMedias);
+						$scope.$apply();
                 	} else {
                 		alert('Image dimensions must be '+ $scope.minWidth +' x '+ $scope.minHeight +' px at minimum.' +
                 		 ' Uploaded image is ' + img.width + ' x ' + img.height + '.');
@@ -84,7 +85,7 @@
 			Project.get({id: $state.params.id}, function(project){
 				$scope.project = project[0];
 				$scope.project.date = new Date($scope.project.date);
-console.log($scope.project)
+	console.log($scope.project)
 				Tag.get(function(tags){
 					$scope.allTags = tags;
 					$scope.project.tags = _.filter($scope.project.tags, function(tag){
@@ -315,7 +316,7 @@ console.log($scope.project)
 	                	publicLink: res.data.publicLink,
 	                	caption: '',
 	                	//image/png, image/jpg
-	                	type: res.data.contentType.split('/')[0]
+	                	type: file.type.split('/')[0]
 	                });
 
 	                // Remove media from selected medias if successfully uploaded
